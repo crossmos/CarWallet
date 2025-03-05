@@ -1,16 +1,20 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
+
+from .model import Brand
+
+class TransportCreate(BaseModel):
+    brand: Brand
+    model: str
+    user_id: int
 
 
-class UserCreate(BaseModel):
-    username: str
-    email: EmailStr
-
-class UserUpdatePartial(BaseModel):
-    username: Optional[str] = None
-    email: Optional[EmailStr] = None
+class TransportUpdatePartial(BaseModel):
+    brand: Optional[Brand] = None
+    model: Optional[str] = None
+    user_id: Optional[int] = None
 
 
-class UserRead(UserCreate):
+class TransportRead(TransportCreate):
     id: int

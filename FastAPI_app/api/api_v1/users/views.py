@@ -1,13 +1,12 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .crud import users as users_crud
-from core.config import settings
-from core.models import db_helper, User
-from core.schemas.user import UserRead, UserCreate
+
+from config import settings
+from db_helper import db_helper
+from .model import User
+from .schema import UserRead, UserCreate, UserUpdatePartial
+from ..dao.base import BaseDAO
 
 router = APIRouter(
     prefix=settings.api.v1.users,
@@ -15,66 +14,65 @@ router = APIRouter(
 )
 
 
+class UserDAO(BaseDAO):
+    model = User
+
+
 @router.get('/', response_model=list[UserRead])
 async def get_users(
-        # session: AsyncSession = Depends(db_helper.session_getter)
-        session: Annotated[
-            AsyncSession,
-            Depends(db_helper.session_getter),
-        ],
+        session: AsyncSession = Depends(db_helper.session_getter)
 ):
-    return await users_crud.get_all_users(session=session)
+    return await UserDAO.get_all(session=session)
 
 
 @router.post('/', response_model=UserRead)
 async def create_user(
-        session: Annotated[
-            AsyncSession,
-            Depends(db_helper.session_getter),
-        ],
-        user_create: UserCreate,
+        create_schema: UserCreate,
+        session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    return await users_crud.create_user(
-        session=session,
-        user_create=user_create,
-    )
+    return await UserDAO.create(session=session, schema=create_schema)
 
 
-@router.get('/{user_id}/', response_model=UserRead)
+@router.get('/{id}/', response_model=UserRead)
 async def get_user(
-        session: Annotated[
-            AsyncSession,
-            Depends(db_helper.session_getter),
-        ],
-        user_id: int
+        user: User = Depends(UserDAO.get_by_id),
 ):
-    user = await users_crud.get_user(session=session, user_id=user_id)
-    if user:
-        return user
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f'User {user_id} not found!'
+    return user
+
+
+@router.put('/{id}/')
+async def update_user(
+        update_schema: UserCreate,
+        session: AsyncSession = Depends(db_helper.session_getter),
+        user: User = Depends(UserDAO.get_by_id),
+
+):
+    return await UserDAO.update(
+        obj=user,
+        schema=update_schema,
+        session=session,
     )
 
 
-@router.put('/{user_id}/')
-async def update_user(
-        session: Annotated[
-            AsyncSession,
-            Depends(db_helper.session_getter),
-        ],
-        user_id: int,
-        user_update: UserCreate
-):
-    pass
+@router.patch('/{id}/')
+async def update_user_partial(
+        update_schema: UserUpdatePartial,
+        session: AsyncSession = Depends(db_helper.session_getter),
+        user: User = Depends(UserDAO.get_by_id),
 
-@router.delete('/{user_id}/')
-async def delete_user(
-        session: Annotated[
-            AsyncSession,
-            Depends(db_helper.session_getter),
-        ],
-        user_id: int
 ):
-    user = await session.delete(User, user_id)
-    return user
+    return await UserDAO.update(
+        obj=user,
+        schema=update_schema,
+        session=session,
+        partial=True,
+    )
+
+
+@router.delete('/{id}/', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+        session: AsyncSession = Depends(db_helper.session_getter),
+        user: User = Depends(UserDAO.get_by_id),
+) -> None:
+    await UserDAO.delete(obj=user, session=session)
+

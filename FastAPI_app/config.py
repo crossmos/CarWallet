@@ -5,6 +5,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class ApiV1Prefix(BaseModel):
     prefix: str = '/v1'
     users: str = '/users'
+    transports: str = '/transports'
+    fuel_losses: str = '/fuel_losses'
+    repair_losses: str = '/repair_losses'
+    spare_losses: str = '/spare_losses'
+    supplie_losses: str = '/supplie_losses'
 
 
 class ApiPrefix(BaseModel):

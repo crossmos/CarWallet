@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional
 
 from sqlalchemy import MetaData, ForeignKey
@@ -24,7 +24,7 @@ class Base(DeclarativeBase):
 class BaseLoss(Base):
     __abstract__ = True
 
-    date: Mapped[datetime]
+    date: Mapped[date]
     description: Mapped[Optional[str]]
     price: Mapped[float]
     amount: Mapped[float]

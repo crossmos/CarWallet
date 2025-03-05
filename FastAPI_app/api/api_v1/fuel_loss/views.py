@@ -4,75 +4,75 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
 from db_helper import db_helper
-from .model import Transport
-from .schema import TransportRead, TransportCreate, TransportUpdatePartial
+from .model import FuelLoss
+from .schema import FuelLossRead, FuelLossCreate, FuelLossUpdatePartial
 from ..dao.base import BaseDAO
 
 router = APIRouter(
-    prefix=settings.api.v1.transports,
-    tags=['Транспортные средства']
+    prefix=settings.api.v1.fuel_losses,
+    tags=['Расходы на топливо']
 )
 
 
-class TransportDAO(BaseDAO):
-    model = Transport
+class FuelLossDAO(BaseDAO):
+    model = FuelLoss
 
 
-@router.get('/', response_model=list[TransportRead])
-async def get_transports(
+@router.get('/', response_model=list[FuelLossRead])
+async def get_fuel_losses(
         session: AsyncSession = Depends(db_helper.session_getter)
 ):
-    return await TransportDAO.get_all(session=session)
+    return await FuelLossDAO.get_all(session=session)
 
 
-@router.post('/', response_model=TransportRead)
-async def create_transport(
-        user_create: TransportCreate,
+@router.post('/', response_model=FuelLossCreate)
+async def create_fuel_loss(
+        create_schema: FuelLossCreate,
         session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    return await TransportDAO.create(session=session, schema=user_create)
+    return await FuelLossDAO.create(session=session, schema=create_schema)
 
 
-@router.get('/{id}/', response_model=TransportRead)
-async def get_transport(
-        user: Transport = Depends(TransportDAO.get_by_id),
+@router.get('/{id}/', response_model=FuelLossRead)
+async def get_fuel_loss(
+        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
 ):
-    return user
+    return fuel_loss
 
 
 @router.put('/{id}/')
-async def update_transport(
-        user_update: TransportCreate,
+async def update_fuel_loss(
+        update_schema: FuelLossCreate,
         session: AsyncSession = Depends(db_helper.session_getter),
-        user: Transport = Depends(TransportDAO.get_by_id),
+        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
 
 ):
-    return await TransportDAO.update(
-        obj=user,
-        schema=user_update,
+    return await FuelLossDAO.update(
+        obj=fuel_loss,
+        schema=update_schema,
         session=session,
     )
 
 
 @router.patch('/{id}/')
-async def update_transport_partial(
-        user_update: TransportUpdatePartial,
+async def update_fuel_loss_partial(
+        update_schema: FuelLossUpdatePartial,
         session: AsyncSession = Depends(db_helper.session_getter),
-        user: Transport = Depends(TransportDAO.get_by_id),
+        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
 
 ):
-    return await TransportDAO.update(
-        obj=user,
-        schema=user_update,
+    return await FuelLossDAO.update(
+        obj=fuel_loss,
+        schema=update_schema,
         session=session,
         partial=True,
     )
 
 
 @router.delete('/{id}/', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_transport(
+async def delete_fuel_loss(
         session: AsyncSession = Depends(db_helper.session_getter),
-        user: Transport = Depends(TransportDAO.get_by_id),
+        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
 ) -> None:
-    await TransportDAO.delete(obj=user, session=session)
+    await FuelLossDAO.delete(obj=fuel_loss, session=session)
 

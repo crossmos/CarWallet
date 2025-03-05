@@ -4,65 +4,65 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
 from db_helper import db_helper
-from .model import FuelLoss
-from .schema import FuelLossRead, FuelLossCreate, FuelLossUpdatePartial
+from .model import RepairLoss
+from .schema import RepairLossRead, RepairLossCreate, RepairLossUpdatePartial
 from ..dao.base import BaseDAO
 
 router = APIRouter(
-    prefix=settings.api.v1.fuel_losses,
-    tags=['Расходы на топливо']
+    prefix=settings.api.v1.repair_losses,
+    tags=['Расходы на ремонт']
 )
 
 
-class FuelLossDAO(BaseDAO):
-    model = FuelLoss
+class RepairLossDAO(BaseDAO):
+    model = RepairLoss
 
 
-@router.get('/', response_model=list[FuelLossRead])
-async def get_fuel_losses(
+@router.get('/', response_model=list[RepairLossRead])
+async def get_repair_losses(
         session: AsyncSession = Depends(db_helper.session_getter)
 ):
-    return await FuelLossDAO.get_all(session=session)
+    return await RepairLossDAO.get_all(session=session)
 
 
-@router.post('/', response_model=FuelLossCreate)
-async def create_fuel_loss(
-        user_create: FuelLossCreate,
+@router.post('/', response_model=RepairLossCreate)
+async def create_repair_loss(
+        create_schema: RepairLossCreate,
         session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    return await FuelLossDAO.create(session=session, schema=user_create)
+    return await RepairLossDAO.create(session=session, schema=create_schema)
 
 
-@router.get('/{id}/', response_model=FuelLossRead)
-async def get_fuel_loss(
-        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
+@router.get('/{id}/', response_model=RepairLossRead)
+async def get_repair_loss(
+        repair_loss: RepairLoss = Depends(RepairLossDAO.get_by_id),
 ):
-    return fuel_loss
+    return repair_loss
 
 
 @router.put('/{id}/')
-async def update_fuel_loss(
-        update_schema: FuelLossCreate,
+async def update_repair_loss(
+        update_schema: RepairLossUpdatePartial,
         session: AsyncSession = Depends(db_helper.session_getter),
-        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
+        repair_loss: RepairLoss = Depends(RepairLossDAO.get_by_id),
 
 ):
-    return await FuelLossDAO.update(
-        obj=fuel_loss,
+    return await RepairLossDAO.update(
+        obj=repair_loss,
         schema=update_schema,
         session=session,
     )
 
 
 @router.patch('/{id}/')
-async def update_fuel_loss_partial(
-        update_schema: FuelLossUpdatePartial,
+async def update_repair_loss_partial(
+        update_schema: RepairLossUpdatePartial,
         session: AsyncSession = Depends(db_helper.session_getter),
-        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
+        repair_loss: RepairLoss = Depends(RepairLossDAO.get_by_id),
 
 ):
-    return await FuelLossDAO.update(
-        obj=fuel_loss,
+    return await RepairLossDAO.update(
+        obj=repair_loss,
         schema=update_schema,
         session=session,
         partial=True,
@@ -70,9 +70,9 @@ async def update_fuel_loss_partial(
 
 
 @router.delete('/{id}/', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_fuel_loss(
+async def delete_repair_loss(
         session: AsyncSession = Depends(db_helper.session_getter),
-        fuel_loss: FuelLoss = Depends(FuelLossDAO.get_by_id),
+        repair_loss: RepairLoss = Depends(RepairLossDAO.get_by_id),
 ) -> None:
-    await FuelLossDAO.delete(obj=fuel_loss, session=session)
+    await RepairLossDAO.delete(obj=repair_loss, session=session)
 

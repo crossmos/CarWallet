@@ -4,9 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-
-
-class SpareLossCreate(BaseModel):
+class SupplieLossCreate(BaseModel):
     date: date
     description: str
     price: float
@@ -14,14 +12,13 @@ class SpareLossCreate(BaseModel):
     transport_id: int
 
 
-class SpareLossUpdatePartial(BaseModel):
+class SupplieLossUpdatePartial(BaseModel):
     date: Optional[date] = None
-    description:Optional [str] = None
+    description: Optional[str] = None
     price: Optional[int] = None
     amount: Optional[float] = None
     transport_id: Optional[int] = None
 
 
-class SpareLossRead(SpareLossCreate):
+class SupplieLossRead(SupplieLossCreate):
     id: int
-

@@ -1,0 +1,1 @@
+Для работы с проекто укажите в env-template свои данные вместо user, pwd, host, port, db_name

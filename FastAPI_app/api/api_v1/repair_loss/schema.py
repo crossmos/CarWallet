@@ -3,11 +3,11 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .model import FuelType
+from .model import RepairType
 
 
-class FuelLossCreate(BaseModel):
-    fuel_type: FuelType
+class RepairLossCreate(BaseModel):
+    repair_type: RepairType
     date: date
     description: str
     price: float
@@ -15,8 +15,8 @@ class FuelLossCreate(BaseModel):
     transport_id: int
 
 
-class FuelLossUpdatePartial(BaseModel):
-    fuel_type: Optional[FuelType] = None
+class RepairLossUpdatePartial(BaseModel):
+    fuel_type: Optional[RepairType] = None
     date: Optional[date] = None
     description:Optional [str] = None
     price: Optional[int] = None
@@ -24,6 +24,6 @@ class FuelLossUpdatePartial(BaseModel):
     transport_id: Optional[int] = None
 
 
-class FuelLossRead(FuelLossCreate):
+class RepairLossRead(RepairLossCreate):
     id: int
 
