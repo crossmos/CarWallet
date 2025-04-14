@@ -2,10 +2,10 @@ import enum
 
 from sqlalchemy.orm import Mapped
 
-from api.api_v1.base_models import BaseLoss
+from core.models.base import BaseLoss
 
 
-class RepairType(enum.Enum):
+class RepairType(str, enum.Enum):
     Unplanned_repairs = 'Внеплановый ремонт'
     Technical_maintenance = 'Техническое обслуживание'
 

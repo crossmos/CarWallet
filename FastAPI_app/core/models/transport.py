@@ -3,10 +3,10 @@ import enum
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from api.api_v1.base_models import Base
+from core.models.base import Base
 
 
-class Brand(enum.Enum):
+class Brand(str, enum.Enum):
     Audi = 'Audi'
     BMW = 'BMW'
 
