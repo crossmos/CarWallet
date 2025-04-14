@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent
 
+
 class ApiV1Prefix(BaseModel):
     prefix: str = '/v1'
     users: str = '/users'
@@ -20,9 +21,12 @@ class ApiPrefix(BaseModel):
     v1: ApiV1Prefix = ApiV1Prefix()
 
 
-class Auth(BaseModel):
-    private_key_path: Path = BASE_DIR / 'certs'/ 'jwt-private.pem'
+class AuthJWT(BaseModel):
+    private_key_path: Path = BASE_DIR / 'certs' / 'jwt-private.pem'
     public_key_path: Path = BASE_DIR / 'certs' / 'jwt-public.pem'
+    algorithm: str = 'RS256'
+    access_token_expire_minutes: int = 60
+    refresh_token_expire_days: int = 30
     prefix: str = '/auth'
 
 
@@ -56,7 +60,7 @@ class Settings(BaseSettings):
     )
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
-    auth: Auth = Auth()
+    auth_jwt: AuthJWT = AuthJWT()
     db: DatabaseConfig
 
 

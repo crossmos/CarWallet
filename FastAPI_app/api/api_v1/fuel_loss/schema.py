@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .model import FuelType
+from core.models.fuel_loss import FuelType
 
 
 class FuelLossCreate(BaseModel):

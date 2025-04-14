@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from config import settings
-from db_helper import db_helper
-from .model import RepairLoss
+from core.config import settings
+from core.models.db_helper import db_helper
+from core.models.repair_loss import RepairLoss
 from .schema import RepairLossRead, RepairLossCreate, RepairLossUpdatePartial
 from ..dao.base import BaseDAO
 

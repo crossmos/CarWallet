@@ -5,8 +5,9 @@ from fastapi import FastAPI
 # from fastapi.responses import ORJSONResponse
 
 from api import router as api_router
-from config import settings
-from db_helper import db_helper
+from api.auth.views import router as auth_router
+from core.config import settings
+from core.models.db_helper import db_helper
 
 
 @asynccontextmanager
@@ -22,9 +23,11 @@ main_app = FastAPI(
     lifespan=lifespan,
 )
 main_app.include_router(
+    auth_router,
+)
+main_app.include_router(
     api_router,
 )
-
 
 if __name__ == '__main__':
     uvicorn.run(

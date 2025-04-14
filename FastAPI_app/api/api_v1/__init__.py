@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from config import settings
+from core.config import settings
 
 from api.api_v1.fuel_loss.views import router as fuel_losses_router
 from api.api_v1.users.views import router as users_router

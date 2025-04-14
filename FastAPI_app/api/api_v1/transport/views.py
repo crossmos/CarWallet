@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
-from config import settings
-from db_helper import db_helper
-from .model import Transport
-from .schema import TransportRead, TransportCreate, TransportUpdatePartial
-from ..dao.base import BaseDAO
+from api.api_v1.dao.base import BaseDAO
+from api.api_v1.transport.schema import TransportRead, TransportCreate, TransportUpdatePartial, TransportWrite
+from api.auth.security import get_current_token_payload
+from core.config import settings
+from core.models.db_helper import db_helper
+from core.models.transport import Transport
 
 router = APIRouter(
     prefix=settings.api.v1.transports,
@@ -20,17 +20,27 @@ class TransportDAO(BaseDAO):
 
 @router.get('/', response_model=list[TransportRead])
 async def get_transports(
-        session: AsyncSession = Depends(db_helper.session_getter)
+        session: AsyncSession = Depends(db_helper.session_getter),
+        payload: dict = Depends(get_current_token_payload)
 ):
     return await TransportDAO.get_all(session=session)
 
 
 @router.post('/', response_model=TransportRead)
 async def create_transport(
-        create_schema: TransportCreate,
+        create_schema: TransportWrite,
         session: AsyncSession = Depends(db_helper.session_getter),
+        payload: dict = Depends(get_current_token_payload)
 ):
-    return await TransportDAO.create(session=session, schema=create_schema)
+    obj = TransportCreate(
+        brand=create_schema.brand,
+        model=create_schema.model,
+        user_id=payload['id']
+    )
+    obj = Transport(**obj.model_dump())
+    session.add(obj)
+    await session.commit()
+    return obj
 
 
 @router.get('/{id}/', response_model=TransportRead)
@@ -75,4 +85,3 @@ async def delete_transport(
         transport: Transport = Depends(TransportDAO.get_by_id),
 ) -> None:
     await TransportDAO.delete(obj=transport, session=session)
-

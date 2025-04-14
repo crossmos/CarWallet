@@ -3,8 +3,7 @@ from fastapi import Depends, Path, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.users.model import User
-from db_helper import db_helper
+from core.models.db_helper import db_helper
 
 
 class BaseDAO:

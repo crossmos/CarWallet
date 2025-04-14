@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from config import settings
-from db_helper import db_helper
-from .model import FuelLoss
+from core.config import settings
+from core.models.db_helper import db_helper
+from core.models.fuel_loss import FuelLoss
 from .schema import FuelLossRead, FuelLossCreate, FuelLossUpdatePartial
 from ..dao.base import BaseDAO
 

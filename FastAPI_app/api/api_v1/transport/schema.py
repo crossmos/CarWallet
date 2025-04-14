@@ -2,11 +2,15 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .model import Brand
+from core.models.transport import Brand
 
-class TransportCreate(BaseModel):
+
+class TransportWrite(BaseModel):
     brand: Brand
     model: str
+
+
+class TransportCreate(TransportWrite):
     user_id: int
 
 

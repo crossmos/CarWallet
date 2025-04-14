@@ -1,15 +1,21 @@
+import enum
 from datetime import date
 from typing import Optional
 
+import sqlalchemy
 from sqlalchemy import MetaData, ForeignKey
 from sqlalchemy.orm import declared_attr, DeclarativeBase, Mapped, mapped_column
 
-from config import settings
+from core.config import settings
 from utils import camel_case_to_snake_case
 
 
 class Base(DeclarativeBase):
     __abstract__ = True
+
+    type_annotation_map = {
+        enum.Enum: sqlalchemy.Enum(enum.Enum, native_enum=False),
+    }
 
     metadata = MetaData(
         naming_convention=settings.db.naming_convention,

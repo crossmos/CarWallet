@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .model import RepairType
+from core.models.repair_loss import RepairType
 
 
 class RepairLossCreate(BaseModel):
