@@ -21,3 +21,4 @@ alembic upgrade head
 ```
 python3 main.py
 ```
+5. После запуска проект доступен по ссылке http://localhost:8080/docs
